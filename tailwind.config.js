@@ -1,5 +1,6 @@
 const defaultTheme = require('tailwindcss/defaultTheme');
 const colors = require('tailwindcss/colors');
+const FormKitVariants = require('@formkit/themes/tailwindcss')
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -9,12 +10,13 @@ module.exports = {
         './storage/framework/views/*.php',
         './resources/views/**/*.blade.php',
         './resources/js/**/*.vue',
+        './node_modules/@formkit/themes/dist/tailwindcss/genesis/index.cjs'
     ],
 
     theme: {
-       
+
         extend: {
-           
+
             fontFamily: {
                 sans: ['Nunito', ...defaultTheme.fontFamily.sans],
             },
@@ -30,8 +32,11 @@ module.exports = {
                 yellow: colors.yellow,
             },
         },
-        
+
     },
 
-    plugins: [require('@tailwindcss/forms'), require('@tailwindcss/typography')],
+    plugins: [
+        require('@tailwindcss/forms'),
+        require('@tailwindcss/typography'),
+        FormKitVariants],
 };

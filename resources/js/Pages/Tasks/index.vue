@@ -1,16 +1,40 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Task from '../../components/Task.vue';
-import SectionTitle from '@/Jetstream/SectionTitle.vue'
-import ConfirmationModal from '@/Jetstream/ConfirmationModal.vue'
-rea
+import DialogModal from '@/Jetstream/DialogModal.vue'
 import Button from '@/Jetstream/Button.vue'
 import { reactive } from 'vue';
+import { FormKitSchema } from '@formkit/vue'
 defineProps({ user: Object })
+const state = reactive(({
+  isModalOpen: false
+}))
 
 const openModal = (e) => {
-  console.log("ADSDSAD")
+  state.isModalOpen = true
 }
+const schema = [
+  {
+    $el: 'h1',
+    children: 'Register'
+  },
+  {
+    $formkit: 'text',
+    name: 'title',
+    label: 'Title',
+    className:"asasds",
+    help: 'This will be used for your account.',
+    validation: 'required'
+  },
+  {
+    $formkit: 'textarea',
+    name: 'description',
+    label: 'Description',
+    help: 'Enter the description',
+    validation: 'required|length:5,150'
+  }]
+
+
 </script>
 
 <template>
@@ -25,15 +49,15 @@ const openModal = (e) => {
         </Button>
       </div>
     </template>
-  
+
     <div class="py-12">
-      <ConfirmationModal>
+      <DialogModal  :show="state.isModalOpen">
         <template #content>
-          <form action="">
-            <input type="text">
-          </form>
+          <FormKit type="form">
+            <FormKitSchema :schema="schema" />
+          </FormKit> 
         </template>
-      </ConfirmationModal>
+      </DialogModal>
       <div class="flex flex-row">
         <div class="overflow-hidden sm:rounded-lg">
           <div class="container mx-4">
