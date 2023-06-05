@@ -5,7 +5,7 @@ namespace App\Models\Scopes;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
-use Illuminate\Support\Facades\Auth;
+
 
 class TaskAssignedToUser implements Scope
 {
@@ -18,6 +18,6 @@ class TaskAssignedToUser implements Scope
      */
     public function apply(Builder $builder, Model $model)
     {
-      $builder->where('assign_to', Auth::user()->id);
+      $builder->where('assign_to', '=', 1);
     }
 }

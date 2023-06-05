@@ -19,7 +19,7 @@ return new class extends Migration
             $table->text('description');
             $table->date('assign_date');
             $table->date('deadline');
-            $table->enum('priority', ['Urgent', 'High', 'Normal', 'Low']);
+            $table->enum('priority', ['urgent', 'high', 'normal', 'low']);
             $table->unsignedBigInteger('project_id');
             $table->unsignedBigInteger('created_by');
             $table->unsignedBigInteger('assign_to');

@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ColumnTaskResource;
+use App\Http\Resources\TaskResource;
+use App\Models\ColumnTask;
 use App\Models\Task;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -11,11 +15,15 @@ class TaskController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Inertia\Response
      */
     public function index()
     {
-        return Inertia::render('Tasks/index');
+
+        return Inertia::render('Tasks/index', [
+            'users' => User::all(['id', 'name', 'email', 'profile_photo_path']),
+            'columns' => ColumnTaskResource::collection(ColumnTask::all()),
+        ]);
     }
 
     /**

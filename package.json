@@ -29,6 +29,7 @@
         "laravel-vite-plugin": "^0.7.8",
         "qalendar": "^2.5.0",
         "vue-cal": "^4.8.1",
+        "vue-draggable-next": "^2.2.0",
         "vuedraggable": "^4.1.0"
     }
 }

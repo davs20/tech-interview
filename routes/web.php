@@ -37,5 +37,9 @@ Route::middleware([
     })->name('dashboard');
     Route::resource('/tasks', TaskController::class);
     Route::resource('/events', EventController::class);
+    Route::resource('/users', EventController::class);
+
+
+
     
 });

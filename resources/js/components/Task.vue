@@ -43,7 +43,7 @@ const getPriorityColor = (priority) => taskStatus.find((item) => item.priority =
                         </span>
                         <span class="flex items-start">
                             <img class="w-18 h-8 rounded-full ml-2"
-                                src="https://avatars.githubusercontent.com/u/28819207?s=40&v=4" :alt="assing_to.user_name" />
+                                :src="assing_to.profile_photo_url" :alt="assing_to.name" />
                         </span>
                     </div>
                 </a>
