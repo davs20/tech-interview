@@ -24,6 +24,7 @@ return new class extends Migration
             $table->unsignedBigInteger('task_id');
             $table->string('class');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

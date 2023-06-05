@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Event;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Http\Resources\EventResource;
 
 class EventController extends Controller
 {
@@ -15,7 +16,11 @@ class EventController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Events/index');
+        
+        return Inertia::render('Events/index', [
+            'events' => EventResource::collection(Event::all()),
+            
+        ]);
     }
 
     /**
@@ -36,7 +41,7 @@ class EventController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Event::create($request->all());
     }
 
     /**
@@ -47,7 +52,7 @@ class EventController extends Controller
      */
     public function show(Event $event)
     {
-        //
+        
     }
 
     /**
@@ -70,7 +75,7 @@ class EventController extends Controller
      */
     public function update(Request $request, Event $event)
     {
-        //
+        $event->update($request->all());
     }
 
     /**
@@ -81,6 +86,6 @@ class EventController extends Controller
      */
     public function destroy(Event $event)
     {
-        //
+        $event->delete();
     }
 }
