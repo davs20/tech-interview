@@ -12,6 +12,7 @@ class Task extends Model
 {
     use HasFactory, SoftDeletes;
     protected $table = 'tasks';
+    protected $fillable = ['title', 'description', 'assign_date', 'deadline', 'priority', 'project_id', 'assign_to', 'column_task_id'];
     protected $casts = [
         'deadline' => 'date:d/m/Y',
     ];

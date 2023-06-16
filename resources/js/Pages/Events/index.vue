@@ -106,6 +106,6 @@ const openModal = (e) => {
           </DialogModal>
         </div>
       </div>
-    </div>
-  </AppLayout>
+     </div> 
+    </AppLayout>
 </template>

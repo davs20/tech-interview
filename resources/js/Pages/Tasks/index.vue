@@ -6,27 +6,34 @@ import Button from '@/Jetstream/Button.vue'
 import {reactive, computed, defineComponent} from 'vue';
 import {FormKitSchema} from '@formkit/vue'
 import draggable from "vuedraggable";
-
+import { useForm } from '@inertiajs/inertia-vue3';
 
 
 const props = defineProps({users: Object, columns:Object})
+const form = useForm({
+        title: '',
+        description: '',
+        deadline: '',
+        priority: '',
+        assing_to: ''
+})
 
 const state = reactive(({
     isModalOpen: false,
-    taskForm: {},
     users: props.users,
     columns: props.columns,
     drag:false
 }))
 
 
+const submit = () => {
+    form.transform(data => ({
+        ...data,
+    })).post('/tasks');
+};
 
 const openModal = (e) => {
     state.isModalOpen = true
-}
-
-const logChanges = (e) => {
-    console.log("asdasddassada")
 }
 
 const schema = [
@@ -42,14 +49,14 @@ const schema = [
         help: 'This will be used for your account.',
         validation: 'required'
     },
-
-    {
-        $formkit: 'file',
-        name: 'photo',
-        label: 'Photo',
-        help: 'Upload a photo ',
-
-    },
+    //
+    // {
+    //     $formkit: 'file',
+    //     name: 'photo',
+    //     label: 'Photo',
+    //     help: 'Upload a photo ',
+    //
+    // },
     {
         $formkit: 'textarea',
         name: 'description',
@@ -84,14 +91,19 @@ const schema = [
         name: 'assing_to',
         label: 'Asing a User',
         help: 'Select the user',
-        validation: 'required',
-        options: {
-            urgent: 'Urgent',
-            high: 'High',
-            normal: 'Normal',
-            low: 'Low'
-        },
+        validation: '',
+        options: props.users.data,
+    },
+
+    {
+        $formkit: 'select',
+        name: 'project_id',
+        label: 'Project',
+        help: 'Select the project',
+        validation: '',
+        options: props.users.data,
     }
+
 
 ]
 
@@ -110,7 +122,6 @@ const schema = [
                 </Button>
             </div>
         </template>
-
         <div class="py-12 flex flex-row flex-nowrap">
 
             <div class="" v-for="(column, index) in state.columns.data">
@@ -133,13 +144,13 @@ const schema = [
                 </draggable>
             </div>
 
-<!--            <DialogModal :show="state.isModalOpen">-->
-<!--                <template #content>-->
-<!--                    <FormKit type="form">-->
-<!--                        <FormKitSchema :schema="schema" :data="state.taskForm"/>-->
-<!--                    </FormKit>-->
-<!--                </template>-->
-<!--            </DialogModal>-->
+            <DialogModal :show="state.isModalOpen">
+                <template #content>
+                    <FormKit type="form" @submit="submit"   v-model="form">
+                        <FormKitSchema :schema="schema"  :data="form" />
+                    </FormKit>
+                </template>
+            </DialogModal>
 <!--            <div class="grid grid-flow-col gap-4 " v-for="column in columns.data">-->
 <!--                <div class="overflow-hidden sm:rounded-lg w-1/2 ">-->
 <!--                    <div class="container mx-4">-->

@@ -3,12 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ColumnTaskResource;
+use App\Http\Resources\ProjectList;
 use App\Http\Resources\TaskResource;
+use App\Http\Resources\UserTaskResource;
 use App\Models\ColumnTask;
+use App\Models\Project;
 use App\Models\Task;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
+use App\Http\Resources\UsersList;
+
 
 class TaskController extends Controller
 {
@@ -21,8 +27,9 @@ class TaskController extends Controller
     {
 
         return Inertia::render('Tasks/index', [
-            'users' => User::all(['id', 'name', 'email', 'profile_photo_path']),
+            'users' => UsersList::collection(User::all()),
             'columns' => ColumnTaskResource::collection(ColumnTask::all()),
+            'projects' => ProjectList::collection(Project::all())
         ]);
     }
 
@@ -44,7 +51,8 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Task::create($request->all());
+        return  Redirect::route('/tasks');
     }
 
     /**
