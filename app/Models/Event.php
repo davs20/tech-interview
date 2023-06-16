@@ -11,12 +11,12 @@ class Event extends Model
 {
     use HasFactory, SoftDeletes;
 
-    ///
+    protected $fillable = ['task_id', 'title', 'description', 'start_date', 'final_date'];
 
     public function task()
     {
         return $this->belongsTo(Task::class, 'task_id');
     }
 
-    
+
 }
