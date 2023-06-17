@@ -20,6 +20,7 @@ return new class extends Migration
             $table->unsignedBigInteger('created_by');
             $table->date('deadline');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

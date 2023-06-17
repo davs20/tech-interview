@@ -15,8 +15,8 @@ class ProjectList extends JsonResource
     public function toArray($request)
     {
         return [
-            $this->id,
-            $this->title
+            'id' => $this->id,
+            'label' => $this->title
         ];
     }
 }

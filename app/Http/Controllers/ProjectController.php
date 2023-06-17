@@ -2,14 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Event;
-use Illuminate\Http\Request;
-use Inertia\Inertia;
-use App\Http\Resources\EventResource;
-use App\Http\Resources\ProjectList;
 use App\Models\Project;
+use Illuminate\Http\Request;
 
-class EventController extends Controller
+class ProjectController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,12 +14,7 @@ class EventController extends Controller
      */
     public function index()
     {
-        
-        return Inertia::render('Events/index', [
-            'events' => EventResource::collection(Event::all()),
-            'projects' => ProjectList::collection(Project::all()),
-            
-        ]);
+        //
     }
 
     /**
@@ -44,27 +35,27 @@ class EventController extends Controller
      */
     public function store(Request $request)
     {
-        Event::create($request->all());
+        //
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Event  $event
+     * @param  \App\Models\Project  $project
      * @return \Illuminate\Http\Response
      */
-    public function show(Event $event)
+    public function show(Project $project)
     {
-        
+        //
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Event  $event
+     * @param  \App\Models\Project  $project
      * @return \Illuminate\Http\Response
      */
-    public function edit(Event $event)
+    public function edit(Project $project)
     {
         //
     }
@@ -73,22 +64,22 @@ class EventController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Event  $event
+     * @param  \App\Models\Project  $project
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Event $event)
+    public function update(Request $request, Project $project)
     {
-        $event->update($request->all());
+        //
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Event  $event
+     * @param  \App\Models\Project  $project
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Event $event)
+    public function destroy(Project $project)
     {
-        $event->delete();
+        //
     }
 }

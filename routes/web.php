@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\ProjectController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -38,6 +39,7 @@ Route::middleware([
     Route::resource('/tasks', TaskController::class);
     Route::resource('/events', EventController::class);
     Route::resource('/users', EventController::class);
+    Route::resource('/projects', ProjectController::class);
 
 
 
