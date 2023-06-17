@@ -3,26 +3,29 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import Task from '../../components/Task.vue';
 import DialogModal from '@/Jetstream/DialogModal.vue'
 import Button from '@/Jetstream/Button.vue'
-import {reactive, computed, defineComponent} from 'vue';
-import {FormKitSchema} from '@formkit/vue'
+import { reactive, computed, defineComponent } from 'vue';
+import { FormKitSchema } from '@formkit/vue'
 import draggable from "vuedraggable";
 import { useForm } from '@inertiajs/inertia-vue3';
 
 
-const props = defineProps({users: Object, columns:Object})
+const props = defineProps({ users: Object, columns: Object, projects: Object })
 const form = useForm({
-        title: '',
-        description: '',
-        deadline: '',
-        priority: '',
-        assing_to: ''
+    title: '',
+    description: '',
+    deadline: '',
+    priority: '',
+    assign_date: '',
+    project_id: '',
+    assign_to: '',
+ 
 })
 
 const state = reactive(({
     isModalOpen: false,
     users: props.users,
     columns: props.columns,
-    drag:false
+    drag: false
 }))
 
 
@@ -37,10 +40,6 @@ const openModal = (e) => {
 }
 
 const schema = [
-    {
-        $el: 'h1',
-        children: 'Register'
-    },
     {
         $formkit: 'text',
         name: 'title',
@@ -66,10 +65,17 @@ const schema = [
     },
 
     {
-        $formkit: 'date',
+        $formkit: 'datetime-local',
         name: 'deadline',
         label: 'Deadline',
         help: 'Enter the deadline',
+        validation: 'required'
+    },
+    {
+        $formkit: 'datetime-local',
+        name: 'assign_date',
+        label: 'Assign Date',
+        help: 'Enter the assign date',
         validation: 'required'
     },
     {
@@ -88,11 +94,11 @@ const schema = [
     },
     {
         $formkit: 'select',
-        name: 'assing_to',
+        name: 'assign_to',
         label: 'Asing a User',
         help: 'Select the user',
         validation: '',
-        options: props.users.data,
+        options: [{value:0, label: 'Select an User'}].concat(props.users.data),
     },
 
     {
@@ -101,7 +107,7 @@ const schema = [
         label: 'Project',
         help: 'Select the project',
         validation: '',
-        options: props.users.data,
+        options: [{value:0, label: 'Select an Project'}].concat(props.projects.data),
     }
 
 
@@ -126,483 +132,26 @@ const schema = [
 
             <div class="" v-for="(column, index) in state.columns.data">
 
-                <draggable
-
-                    :list="column.tasks"
-                    item-key="id"
-                    class="list-group"
-                    group="columns"
-                    :key="column.id"
-
+                <draggable :list="column.tasks" item-key="id" class="list-group" group="columns" :key="column.id"
                     ghost-class="ghost">
                     <template #item="{ element }">
-                        <Task  :title="element.title" :description="element.description"
-                                                         :assing_to="element.assign_to" :priority="element.priority"
-                                                          :created_by="element.owner" />
-
+                        <Task :title="element.title" :description="element.description" :assing_to="element.assign_to"
+                            :priority="element.priority" :created_by="element.owner" />
                     </template>
                 </draggable>
             </div>
 
             <DialogModal :show="state.isModalOpen">
                 <template #content>
-                    <FormKit type="form" @submit="submit"   v-model="form">
-                        <FormKitSchema :schema="schema"  :data="form" />
+                    {{ form }}
+                    <FormKit type="form" @submit="submit" v-model="form">
+                        <FormKitSchema :schema="schema" :data="form" />
                     </FormKit>
                 </template>
             </DialogModal>
-<!--            <div class="grid grid-flow-col gap-4 " v-for="column in columns.data">-->
-<!--                <div class="overflow-hidden sm:rounded-lg w-1/2 ">-->
-<!--                    <div class="container mx-4">-->
-<!--                        <h2 class="font-extrabold text-lg">-->
-<!--                            {{column.column.title}}-->
-<!--                        </h2>-->
-<!--                    </div>-->
-<!--                    <div v-for="task in column.tasks">-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                    </div>-->
-
-<!--                </div>-->
-<!--                <div class="overflow-hidden sm:rounded-lg w-1/2">-->
-<!--                    <div class="container mx-4">-->
-<!--                        <h2 class="font-extrabold text-lg">-->
-<!--                            {{column.column.title}}-->
-<!--                        </h2>-->
-<!--                    </div>-->
-<!--                    <div v-for="task in column.tasks">-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                    </div>-->
-
-<!--                </div>-->
-<!--                <div class="overflow-hidden sm:rounded-lg w-1/2">-->
-<!--                    <div class="container mx-4">-->
-<!--                        <h2 class="font-extrabold text-lg">-->
-<!--                            {{column.column.title}}-->
-<!--                        </h2>-->
-<!--                    </div>-->
-<!--                    <div v-for="task in column.tasks">-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                    </div>-->
-
-<!--                </div>-->
-<!--                <div class="overflow-hidden sm:rounded-lg w-1/2">-->
-<!--                    <div class="container mx-4">-->
-<!--                        <h2 class="font-extrabold text-lg">-->
-<!--                            {{column.column.title}}-->
-<!--                        </h2>-->
-<!--                    </div>-->
-<!--                    <div v-for="task in column.tasks">-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                    </div>-->
-
-<!--                </div>-->
-<!--                <div class="overflow-hidden sm:rounded-lg w-1/2">-->
-<!--                    <div class="container mx-4">-->
-<!--                        <h2 class="font-extrabold text-lg">-->
-<!--                            {{column.column.title}}-->
-<!--                        </h2>-->
-<!--                    </div>-->
-<!--                    <div v-for="task in column.tasks">-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                    </div>-->
-
-<!--                </div>-->
-<!--                <div class="overflow-hidden sm:rounded-lg w-1/2">-->
-<!--                    <div class="container mx-4">-->
-<!--                        <h2 class="font-extrabold text-lg">-->
-<!--                            {{column.column.title}}-->
-<!--                        </h2>-->
-<!--                    </div>-->
-<!--                    <div v-for="task in column.tasks">-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                    </div>-->
-
-<!--                </div>-->
-<!--                <div class="overflow-hidden sm:rounded-lg w-1/2">-->
-<!--                    <div class="container mx-4">-->
-<!--                        <h2 class="font-extrabold text-lg">-->
-<!--                            {{column.column.title}}-->
-<!--                        </h2>-->
-<!--                    </div>-->
-<!--                    <div v-for="task in column.tasks">-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                    </div>-->
-
-<!--                </div>-->
-<!--                <div class="overflow-hidden sm:rounded-lg w-1/2">-->
-<!--                    <div class="container mx-4">-->
-<!--                        <h2 class="font-extrabold text-lg">-->
-<!--                            {{column.column.title}}-->
-<!--                        </h2>-->
-<!--                    </div>-->
-<!--                    <div v-for="task in column.tasks">-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                    </div>-->
-
-<!--                </div>-->
-<!--                <div class="overflow-hidden sm:rounded-lg w-1/2">-->
-<!--                    <div class="container mx-4">-->
-<!--                        <h2 class="font-extrabold text-lg">-->
-<!--                            {{column.column.title}}-->
-<!--                        </h2>-->
-<!--                    </div>-->
-<!--                    <div v-for="task in column.tasks">-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                    </div>-->
-
-<!--                </div>-->
-<!--                <div class="overflow-hidden sm:rounded-lg w-1/2">-->
-<!--                <div class="container mx-4">-->
-<!--                    <h2 class="font-extrabold text-lg">-->
-<!--                        {{column.column.title}}-->
-<!--                    </h2>-->
-<!--                </div>-->
-<!--                <div v-for="task in column.tasks">-->
-<!--                    <Task  :title="task.title" :description="task.description"-->
-<!--                           :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                           :created_by="task.owner" />-->
-<!--                    <Task  :title="task.title" :description="task.description"-->
-<!--                           :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                           :created_by="task.owner" />-->
-<!--                    <Task  :title="task.title" :description="task.description"-->
-<!--                           :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                           :created_by="task.owner" />-->
-<!--                    <Task  :title="task.title" :description="task.description"-->
-<!--                           :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                           :created_by="task.owner" />-->
-<!--                    <Task  :title="task.title" :description="task.description"-->
-<!--                           :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                           :created_by="task.owner" />-->
-<!--                    <Task  :title="task.title" :description="task.description"-->
-<!--                           :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                           :created_by="task.owner" />-->
-<!--                    <Task  :title="task.title" :description="task.description"-->
-<!--                           :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                           :created_by="task.owner" />-->
-<!--                    <Task  :title="task.title" :description="task.description"-->
-<!--                           :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                           :created_by="task.owner" />-->
-<!--                    <Task  :title="task.title" :description="task.description"-->
-<!--                           :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                           :created_by="task.owner" />-->
-<!--                </div>-->
-
-<!--            </div>-->
-<!--                <div class="overflow-hidden sm:rounded-lg w-1/2">-->
-<!--                    <div class="container mx-4">-->
-<!--                        <h2 class="font-extrabold text-lg">-->
-<!--                            {{column.column.title}}-->
-<!--                        </h2>-->
-<!--                    </div>-->
-<!--                    <div v-for="task in column.tasks">-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                    </div>-->
-
-<!--                </div>-->
-<!--                <div class="overflow-hidden sm:rounded-lg w-1/2">-->
-<!--                    <div class="container mx-4">-->
-<!--                        <h2 class="font-extrabold text-lg">-->
-<!--                            {{column.column.title}}-->
-<!--                        </h2>-->
-<!--                    </div>-->
-<!--                    <div v-for="task in column.tasks">-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                        <Task  :title="task.title" :description="task.description"-->
-<!--                               :assing_to="task.assign_to" :priority="task.priority"-->
-<!--                               :created_by="task.owner" />-->
-<!--                    </div>-->
-
-<!--                </div>-->
-
-<!--            </div>-->
-
         </div>
 
     </AppLayout>
 </template>
 
-<style>
-</style>
+<style></style>

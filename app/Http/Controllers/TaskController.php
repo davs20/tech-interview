@@ -13,8 +13,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
-use App\Http\Resources\UsersList;
-
+use App\Http\Resources\UserList;
+use Illuminate\Support\Facades\Auth;
 
 class TaskController extends Controller
 {
@@ -27,7 +27,7 @@ class TaskController extends Controller
     {
 
         return Inertia::render('Tasks/index', [
-            'users' => UsersList::collection(User::all()),
+            'users' => UserList::collection(User::all()),
             'columns' => ColumnTaskResource::collection(ColumnTask::all()),
             'projects' => ProjectList::collection(Project::all())
         ]);
@@ -51,7 +51,10 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        Task::create($request->all());
+        $data = $request->all();
+        $data['created_by'] = Auth::user()->id;
+        $data['column_task_id'] = 1;
+        Task::create($data);
         return  Redirect::route('/tasks');
     }
 

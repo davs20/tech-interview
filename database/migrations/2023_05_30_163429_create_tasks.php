@@ -17,8 +17,8 @@ return new class extends Migration
             $table->id();
             $table->string('title', 155);
             $table->text('description');
-            $table->date('assign_date');
-            $table->date('deadline');
+            $table->dateTime('assign_date');
+            $table->dateTime('deadline');
             $table->enum('priority', ['urgent', 'high', 'normal', 'low']);
             $table->unsignedBigInteger('project_id');
             $table->unsignedBigInteger('created_by');
